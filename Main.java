@@ -1,4 +1,4 @@
-package asociados;
+
 // aqui va solo el metodo run
 
 public class Main {

@@ -1,4 +1,4 @@
-package asociados;
+
 
 import java.time.LocalDate;
 
