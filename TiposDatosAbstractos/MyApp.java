@@ -2,6 +2,9 @@ package TiposDatosAbstractos;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import Estructura.AsociadoDirecto;
+import Estructura.AsociadoNatural;
 import Estructura.Asociados;
 import java.time.LocalDate;
 import javax.swing.*;
@@ -11,11 +14,15 @@ public class MyApp {
 
     // Lista para almacenar los asociados
     private static List<Asociados> listaAsociados = new ArrayList<>();
+    private static List<AsociadoDirecto> listaAD = new ArrayList<>();
+    private static List<AsociadoNatural> listaAN = new ArrayList<>();
+    private static int conttrolador_asociados = 0; //esta vaina controla el registro de asociados directivos para que a la hora de imprimir no haya pedo  
+
 
     public static void main(String[] args) {
         while (true) {
             // Mostrar el menú
-            String[] opciones = {"Agregar Nuevo Asociado", "Asignar cargo", "Registro de aportación", "Imprimir lista de asociados", "Imprimir lista de asociados naturales"};
+            String[] opciones = {"Agregar Nuevo Asociado", "Asignar cargo Directivo", "Registro de aportación", "Imprimir lista de asociados Directivos", "Imprimir lista de asociados naturales"};
             int seleccion = JOptionPane.showOptionDialog(null, "Seleccione el proceso a realizar:", "Menú Inicio",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opciones, opciones[0]);
 
@@ -25,13 +32,13 @@ public class MyApp {
                     AgregarAsociados();
                     break;
                 case 1:
-                    AsignarCargo_Directivo();
+                    AsignarCargo_Directivo(listaAsociados);
                     break;
                 case 2:
                     RegistrarAportacionAsociadoNatural();
                     break;
                 case 3:
-                    ImprimirAsociados();
+                    ImprimirAsociadosDirectivos();
                     break;
                 case 4:
                     ImprimirAsociadosNaturales();
@@ -81,25 +88,52 @@ public class MyApp {
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Error: Ingrese un valor numérico válido.");
         }
+
     }
     
 
     // AQUI SIGUEN NADA FUNCIONA
 
-    public static void AsignarCargo_Directivo() {
-        JOptionPane.showMessageDialog(null, "Método Asignar Cargo llamado");
+    public static void AsignarCargo_Directivo( List<Asociados> listaAsociados) {
+        if (listaAsociados.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No hay asociados registrados");
+            return;
+        }
+        if (conttrolador_asociados >= listaAsociados.size()) {
+            JOptionPane.showMessageDialog(null, "Todos los asociados ya tienen un cargo asignado.");
+            return;
+        }  //esta mae ni se les ocurra quitarla (el segundo if del metodo), sino a la hora de imprimir solo se va a imprimir el primer asociado registrado
+        //ctm yonathan <3
+        Asociados asociado = listaAsociados.get(conttrolador_asociados);
+        String cargo = JOptionPane.showInputDialog(null, "Ingresa el cargo para asignar: ");
+        LocalDate fecha_tomaPosesion = LocalDate.now();
+        if (cargo == null){
+            JOptionPane.showInputDialog(null, "El cargo no puede quedar vacío.");
+            return;
+        }
+        AsociadoDirecto asociadoD = new AsociadoDirecto(
+            asociado.getNum_socio(),
+            asociado.getNombre(),
+            asociado.getTelefono(),
+            asociado.getFecha_ingreso(),
+            cargo,
+            fecha_tomaPosesion
+        );
+        listaAD.add(asociadoD);
+        conttrolador_asociados++;
     }
+    
 
     public static void RegistrarAportacionAsociadoNatural() {
         JOptionPane.showMessageDialog(null, "Método Registro llamado");
     }
 
-    public static void ImprimirAsociados() {
-        if (listaAsociados.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No hay asociados registrados.");
+    public static void ImprimirAsociadosDirectivos() {
+        if (listaAD.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No hay asociados directivos registrados.");
         } else {
             StringBuilder sb = new StringBuilder();
-            for (Asociados asociado : listaAsociados) {
+            for (AsociadoDirecto asociado : listaAD) {
                 sb.append(asociado.toString()).append("\n");
             }
             JOptionPane.showMessageDialog(null, sb.toString());

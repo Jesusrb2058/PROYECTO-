@@ -47,7 +47,7 @@ public class Asociados {
         return "Número de Socio: " + num_socio + "\n" +
                "Nombre: " + nombre + "\n" +
                "Teléfono: " + telefono + "\n" +
-               "Fecha de Ingreso: " + fecha_ingreso + "\n" + "--------------------";
+               "Fecha de Ingreso: " + fecha_ingreso + "\n";
 
     }
 
