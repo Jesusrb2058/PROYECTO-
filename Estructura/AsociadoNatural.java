@@ -36,22 +36,20 @@ public class AsociadoNatural extends Asociados {
     }
    
 
-    public AsociadoNatural(int num_socio, String nombre, int telefono, LocalDate fecha_ingreso,
-            long monto_totalAportaciones, int cantidad_Aportaciones, LocalDate fechaUltimaAportacion,
-            int contador_AsociadosNaturales) {
-        super(num_socio, nombre, telefono, fecha_ingreso);
+    public AsociadoNatural(int num_socio, String nombre, long l, LocalDate fecha_ingreso,
+            long monto_totalAportaciones, int cantidad_Aportaciones, LocalDate fechaUltimaAportacion) {
+        super(num_socio, nombre, l, fecha_ingreso);
         this.monto_totalAportaciones = monto_totalAportaciones;
         this.cantidad_Aportaciones = cantidad_Aportaciones;
         this.fechaUltimaAportacion = fechaUltimaAportacion;
-        this.contador_AsociadosNaturales = contador_AsociadosNaturales;
+        
         
     }
 
     @Override
     public String toString() {
-        return super.toString() + "ASOCIADO_NATURAL [monto_totalAportaciones=" + monto_totalAportaciones + ", cantidad_Aportaciones="
-                + cantidad_Aportaciones + ", fechaUltimaAportacion=" + fechaUltimaAportacion
-                + ", contador_AsociadosNaturales=" + contador_AsociadosNaturales + "]";
+        return super.toString() + "Monto totalAportaciones: " + monto_totalAportaciones + "\nCantidad Aportaciones"
+                + cantidad_Aportaciones + "\nfecha Ultima Aportacion: " + fechaUltimaAportacion;
     }
 
     
