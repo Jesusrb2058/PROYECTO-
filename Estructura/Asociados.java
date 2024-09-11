@@ -1,7 +1,7 @@
 package Estructura;
- 
+    
 import java.time.LocalDate;
-
+    
 public class Asociados {
 
     private int num_socio;

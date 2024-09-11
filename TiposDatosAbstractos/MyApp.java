@@ -24,7 +24,7 @@ public class MyApp {
     public void iniciarMenu() {
         while (true) {
             // Mostrar el menú
-            String[] opciones = {"Agregar Nuevo Asociado", "Asignar cargo Directivo", "Registro de aportación", "Imprimir lista de asociados Directivos", "Imprimir lista de asociados naturales"};
+            String[] opciones = {"Agregar Nuevo Asociado", "Asignar cargo Directivo", "Imprimir lista de asociados Directivos", "Imprimir lista de asociados naturales"};
             int seleccion = JOptionPane.showOptionDialog(null, "Seleccione el proceso a realizar:", "Menú Inicio",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opciones, opciones[0]);
 
@@ -37,12 +37,9 @@ public class MyApp {
                     AsignarCargo_Directivo_2(listaAsociados);
                     break;
                 case 2:
-                    RegistrarAportacionAsociadoNatural_2();  
-                    break;
-                case 3:
                     ImprimirAsociadosDirectivos();
                     break;
-                case 4:
+                case 3:
                     ImprimirAsociadosNaturales();
                     break;
                 default:
@@ -238,66 +235,6 @@ public class MyApp {
         }
     }
 
-    /// AQUIIIII
-    public static void RegistrarAportacionAsociadoNatural_2() {
-        if (listaAN.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No hay asociados naturales registrados.");
-            return;
-        }
-    
-        // Solicitar el número de asociado
-        String inputNumSocio = JOptionPane.showInputDialog(null, "Ingrese el número del socio:");
-        if (inputNumSocio == null || inputNumSocio.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "El número de socio no puede estar vacío.");
-            return;
-        }
-    
-        int numSocio;
-        try {
-            numSocio = Integer.parseInt(inputNumSocio.trim());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Número de socio inválido.");
-            return;
-        }
-    
-        // Buscar el asociado natural en la lista
-        AsociadoNatural asociadoN = null;
-        for (AsociadoNatural an : listaAN) {
-            if (an.getNum_socio() == numSocio) {
-                asociadoN = an;
-                break;
-            }
-        }
-    
-        if (asociadoN == null) {
-            JOptionPane.showMessageDialog(null, "Asociado natural no encontrado.");
-            return;
-        }
-    
-        // Solicitar la cantidad de la nueva aportación
-        String inputAportacion = JOptionPane.showInputDialog(null, "Ingrese la cantidad de la nueva aportación:");
-        if (inputAportacion == null || inputAportacion.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Cantidad de aportación no ingresada.");
-            return;
-        }
-    
-        double nuevaAportacion;
-        try {
-            nuevaAportacion = Double.parseDouble(inputAportacion.trim());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Cantidad de aportación inválida.");
-            return;
-        }
-    
-        // Actualizar la aportación
-        asociadoN.agregarAportacion(nuevaAportacion);
-    
-        // Mostrar un mensaje de éxito
-        JOptionPane.showMessageDialog(null, "Aportación registrada exitosamente.");
-    }
-    
-
-/////
 
 
 

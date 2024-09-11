@@ -31,10 +31,6 @@ Asigna un cargo a un asociado directivo. Solicita al usuario el número del soci
 **Parámetros:**
 - `listaAsociados`: Lista de asociados de la cual se extraerá el asociado para asignar el cargo.
 
-### `RegistrarAportacionAsociadoNatural_2()`
-
-Registra una nueva aportación para un asociado natural específico. Solicita el número del socio y la cantidad de la nueva aportación, y actualiza la información del asociado.
-
 ### `ImprimirAsociadosDirectivos()`
 
 Imprime la lista de asociados directivos en un cuadro de diálogo.

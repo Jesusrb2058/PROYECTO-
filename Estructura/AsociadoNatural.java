@@ -2,15 +2,11 @@ package Estructura;
 
 import java.time.LocalDate;
 
-import javax.swing.JOptionPane;
-
 public class AsociadoNatural extends Asociados {
 
     private long monto_totalAportaciones;
     private int cantidad_Aportaciones;
     private LocalDate fechaUltimaAportacion;
-    private double montoAportacionTotal;
-    private int cantidadAportaciones;
 
     public long getMontoAportaciones() {
         return monto_totalAportaciones;
@@ -49,14 +45,4 @@ public class AsociadoNatural extends Asociados {
         return super.toString() + "Monto total de aportaciones: " + monto_totalAportaciones + "\nCantidad de aportaciones: "
             + cantidad_Aportaciones + "\nFecha de la última aportación: " + fechaUltimaAportacion;
     }
-    public void agregarAportacion(double cantidad) {
-        if (cantidad >= 2500 || cantidadAportaciones == 0) {
-            montoAportacionTotal += cantidad;  // Suma la nueva cantidad al monto total de aportaciones
-            cantidadAportaciones++;  // Incrementa el contador de aportaciones
-            fechaUltimaAportacion = LocalDate.now();  // Actualiza la fecha de la última aportación
-        } else {
-            JOptionPane.showMessageDialog(null, "La primera aportación debe ser mayor o igual a 2500.");
-        }
-    }
-    
 }
