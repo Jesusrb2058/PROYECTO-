@@ -2,6 +2,7 @@ package TiposDatosAbstractos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 import Estructura.AsociadoDirecto;
 import Estructura.AsociadoNatural;
@@ -17,7 +18,8 @@ public class MyApp {
     private static List<AsociadoDirecto> listaAD = new ArrayList<>();
     private static List<AsociadoNatural> listaAN = new ArrayList<>();
     private static int conttrolador_asociados = 0; //esta vaina controla el registro de asociados directivos para que a la hora de imprimir no haya pedo  
-
+    //private static Object [] cargos = {"1. Jefe \n2. Administrador \n3. Gerente \n4. Orientador \5.Otro"};
+    private static List<String> cargosDisponibles = new ArrayList<>(Arrays.asList("Jefe", "Administrador", "Gerente", "Orientador", "Otro"));
 
 
     public void iniciarMenu() {
@@ -51,6 +53,20 @@ public class MyApp {
         }
     }
 
+    public int  opciones_Cargo(){
+        int op = Integer.parseInt(JOptionPane.showInputDialog("1. Jefe \n2. Administrador \n3. Gerente \n4. Orientador \nSELECCIONA UN  CARGO A ASIGNAR: "));
+        switch (op) {
+            case 1: 
+                
+                break;
+        
+            default:
+                break;
+        }
+        return op;
+
+    }
+
     public static void AgregarAsociados() {
         try {
             Random rand = new Random();
@@ -82,31 +98,61 @@ public class MyApp {
                 }
                 JOptionPane.showMessageDialog(null, "El número de teléfono debe tener exactamente 10 dígitos.");
             }
+            //aqui va la selección de asociado
             LocalDate fechaIngreso = LocalDate.now();
             Asociados nuevoAsociado = new Asociados(numSocio, nombre, telefono, fechaIngreso);
             listaAsociados.add(nuevoAsociado);
-            JOptionPane.showMessageDialog(null, "Número de Socio: " + numSocio + "\nNombre: " + nombre + "\nTeléfono: " + telefono + "\nFecha de Ingreso: " + fechaIngreso);
+            Directivo_O_Natural(listaAsociados);
+            //JOptionPane.showMessageDialog(null, "Número de Socio: " + numSocio + "\nNombre: " + nombre + "\nTeléfono: " + telefono + "\nFecha de Ingreso: " + fechaIngreso);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Error: Ingrese un valor numérico válido.");
         }
 
     }
-    
-
-    public static void AsignarCargo_Directivo( List<Asociados> listaAsociados) {
-        if (listaAsociados.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No hay asociados registrados");
-            return;
+    public static String seleccionarCargo(List<AsociadoDirecto> listaAD) {
+        // si se selecciona un cargo proximamente no se puede volver a usar o seleccionar directamente de las opciones
+        List<String> cargosNoAsignados = new ArrayList<>(cargosDisponibles);
+        for (AsociadoDirecto a : listaAD) {
+            cargosNoAsignados.remove(a.getCargo());
         }
-        if (conttrolador_asociados >= listaAsociados.size()) {
-            JOptionPane.showMessageDialog(null, "Todos los asociados ya tienen un cargo asignado.");
-            return;
-        }  //esta mae ni se les ocurra quitarla (el segundo if del metodo), sino a la hora de imprimir solo se va a imprimir el primer asociado registrado
-        //ctm yonathan <3
-        //Y: ese wey 
+        
+        //pues aquí se muestran los cargos disponibles
+        Object seleccion = JOptionPane.showInputDialog(
+            null,
+            "Seleccione el cargo para asignar:",
+            "Opciones de Cargos",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            cargosNoAsignados.toArray(),
+            cargosNoAsignados.get(0)
+        );
+        
+        if (seleccion == null) {
+            return null; // Se cancela la operación
+        }
+        
+        String cargo = seleccion.toString();
+        
+        if (cargo.equals("Otro")) {
+            cargo = JOptionPane.showInputDialog(null, "Ingrese el tipo de Cargo:");
+            if (cargo == null || cargo.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "El cargo no puede quedar vacío.");
+                return null;
+            }
+        }
+        
+        return cargo;
+    }
+    
+    public static void AsignarCargo_Directivo( List<Asociados> listaAsociados) {
+        //
         Asociados asociado = listaAsociados.get(conttrolador_asociados);
-        String cargo = JOptionPane.showInputDialog(null, "Ingresa el cargo para asignar: ");
+        //String cargo = JOptionPane.showInputDialog(null, "Otros: "); //en esta ventana seria lo de otros
+        //y en este mismo input un listado de cargos 
+        //condicion, una persona no puede tener el mismo cargo dos vces y dos personas no pueden tener el mismo cargo
         LocalDate fecha_tomaPosesion = LocalDate.now();
+        String cargo = seleccionarCargo(listaAD);
+
         if (cargo == null){
             JOptionPane.showInputDialog(null, "El cargo no puede quedar vacío.");
             return;
@@ -123,7 +169,6 @@ public class MyApp {
         conttrolador_asociados++;
     }
     
-
     public static void RegistrarAportacionAsociadoNatural(List<Asociados> listaAsociados){
     if (listaAsociados.isEmpty()) {
         JOptionPane.showMessageDialog(null, "No hay asociados registrados");
@@ -155,12 +200,38 @@ public class MyApp {
         JOptionPane.showMessageDialog(null, "Error: Ingrese un valor numérico válido y/o No deje vacio los espacios");
         return;
     }
-
-
     
 }
 
-    public static void ImprimirAsociadosDirectivos() {
+public static void ImprimirAsociadosDirectivos() {
+    if (listaAD.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "No hay asociados directivos registrados.");
+    } else {
+        StringBuilder sb = new StringBuilder();
+        for (AsociadoDirecto asociado : listaAD) {
+            sb.append("Número de Socio: ").append(asociado.getNum_socio()).append("\n");
+            sb.append("Nombre: ").append(asociado.getNombre()).append("\n");
+            sb.append("Teléfono: ").append(asociado.getTelefono()).append("\n");
+            sb.append("Fecha de Ingreso: ").append(asociado.getFecha_ingreso()).append("\n");
+            sb.append("Cargo: ").append(asociado.getCargo()).append("\n");
+            sb.append("Fecha de Toma de Posesión: ").append(asociado.getFecha_TomaPosesion()
+            ).append("\n");
+            sb.append("------------\n");
+        }
+        
+        // con el text area se ve de manera que se podamos desplazar todo el rollo
+        JTextArea textArea = new JTextArea(20, 50);
+        textArea.setText(sb.toString());
+        textArea.setEditable(false);
+        
+        // y con el scrollpane se hace eso
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        
+        // ya después con un joptionpane se hace todo el pedo
+        JOptionPane.showMessageDialog(null, scrollPane, "Lista de Asociados Directivos", JOptionPane.INFORMATION_MESSAGE);
+    }
+}
+    /*public static void ImprimirAsociadosDirectivos() {
         if (listaAD.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No hay asociados directivos registrados.");
         } else {
@@ -171,7 +242,7 @@ public class MyApp {
             }
             JOptionPane.showMessageDialog(null, sb.toString());
         }
-    }
+    }*/
 
     public static void ImprimirAsociadosNaturales() {
         if (listaAN.isEmpty()) {
@@ -185,21 +256,41 @@ public class MyApp {
             JOptionPane.showMessageDialog(null, sb.toString());
         }
     }
+
+        //método auxiliar al método de asignar asociado, sea diretivo o natural
+        public static void Directivo_O_Natural(List<Asociados> listaAsociados){
+            //void aD = AsignarCargo_Directivo(listaAsociados);
+            Object[] op = {"Asociado DIrectivo", "Asociado Natural"};
+            int res = JOptionPane.showOptionDialog(null, 
+            "¿Que Tipo De Asociado Desea Añadir?", 
+            "SELECCIÓN DE ASOCIADO",  
+            JOptionPane.DEFAULT_OPTION, 
+            JOptionPane.QUESTION_MESSAGE, 
+            null, 
+            op, 
+            op[0]);
+            if(res == 0){
+                AsignarCargo_Directivo(listaAsociados);
+            }     
+            else if (res == 1){
+                RegistrarAportacionAsociadoNatural(listaAsociados);
+            }   
+        }
     
     public static void run() {
         try {
             // Mostrar el diálogo
             int response = JOptionPane.showConfirmDialog(null, "Bienvenido al sistema de gestión de asociados", 
                                                          "Sistema", JOptionPane.DEFAULT_OPTION);
-            // Si se cierra la ventana o se presiona "OK", response será -1
+            
             if (response == JOptionPane.CLOSED_OPTION) {
-                System.exit(0); // Cerrar el programa si se cierra la ventana
+                System.exit(0); 
             }
         } catch (Exception e) {
-            System.exit(0); // Cerrar el programa en caso de error
+            System.exit(0); 
         }
 
-        // Lo único que hace es llamar a la función para iniciar todo
+    
         MyApp app = new MyApp();
         app.iniciarMenu(); 
     }
