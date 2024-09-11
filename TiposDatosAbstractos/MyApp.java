@@ -17,8 +17,7 @@ public class MyApp {
     private static List<Asociados> listaAsociados = new ArrayList<>();
     private static List<AsociadoDirecto> listaAD = new ArrayList<>();
     private static List<AsociadoNatural> listaAN = new ArrayList<>();
-    private static int conttrolador_asociados = 0; //esta vaina controla el registro de asociados directivos para que a la hora de imprimir no haya pedo  
-    //private static Object [] cargos = {"1. Jefe \n2. Administrador \n3. Gerente \n4. Orientador \5.Otro"};
+    private static int conttrolador_asociados = 0;
     private static List<String> cargosDisponibles = new ArrayList<>(Arrays.asList("Jefe", "Administrador", "Gerente", "Orientador", "Otro"));
 
 
@@ -35,10 +34,10 @@ public class MyApp {
                     AgregarAsociados();
                     break;
                 case 1:
-                    AsignarCargo_Directivo(listaAsociados);
+                    AsignarCargo_Directivo_2(listaAsociados);
                     break;
                 case 2:
-                    RegistrarAportacionAsociadoNatural(listaAsociados);
+                    RegistrarAportacionAsociadoNatural_2();  
                     break;
                 case 3:
                     ImprimirAsociadosDirectivos();
@@ -145,11 +144,8 @@ public class MyApp {
     }
     
     public static void AsignarCargo_Directivo( List<Asociados> listaAsociados) {
-        //
+    
         Asociados asociado = listaAsociados.get(conttrolador_asociados);
-        //String cargo = JOptionPane.showInputDialog(null, "Otros: "); //en esta ventana seria lo de otros
-        //y en este mismo input un listado de cargos 
-        //condicion, una persona no puede tener el mismo cargo dos vces y dos personas no pueden tener el mismo cargo
         LocalDate fecha_tomaPosesion = LocalDate.now();
         String cargo = seleccionarCargo(listaAD);
 
@@ -168,40 +164,202 @@ public class MyApp {
         listaAD.add(asociadoD);
         conttrolador_asociados++;
     }
+    public static void RegistrarAportacionAsociadoNatural(List<Asociados> listaAsociados) {
+        if (listaAsociados.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No hay asociados registrados.");
+            return;
+        }
     
-    public static void RegistrarAportacionAsociadoNatural(List<Asociados> listaAsociados){
+        if (conttrolador_asociados >= listaAsociados.size()) {
+            JOptionPane.showMessageDialog(null, "Todos los asociados ya tienen un cargo asignado.");
+            return;
+        }
+    
+        Asociados asociado = listaAsociados.get(conttrolador_asociados);
+    
+        try {
+            // Verificar si el asociado ya es un AsociadoNatural
+            AsociadoNatural asociadoN = null;
+            for (AsociadoNatural an : listaAN) {
+                if (an.getNum_socio() == asociado.getNum_socio()) {
+                    asociadoN = an;
+                    break;
+                }
+            }
+    
+            // Si el asociado ya existe como AsociadoNatural, solo actualizar las aportaciones
+            if (asociadoN != null) {
+                while (true) {
+                    String input2 = JOptionPane.showInputDialog("Ingresa la cantidad de nuevas aportaciones: ");
+                    int nuevasAportaciones = Integer.parseInt(input2);
+                    
+                    if (nuevasAportaciones * asociadoN.getMontoAportaciones() < 2500) {
+                        JOptionPane.showMessageDialog(null, "La cantidad total de aportaciones debe ser al menos 2500.");
+                        continue; // Volver a pedir la aportación
+                    }
+                    
+                    asociadoN.setMontoAportaciones(asociadoN.getMontoAportaciones() + (nuevasAportaciones * asociadoN.getMontoAportaciones()));
+                    asociadoN.setCantidadAportaciones(asociadoN.getCantidadAportaciones() + nuevasAportaciones);
+                    asociadoN.setFechaUltimaAportacion(LocalDate.now()); // Actualizar la fecha de la última aportación
+                    JOptionPane.showMessageDialog(null, "Aportaciones actualizadas correctamente.");
+                    return;
+                }
+            }
+    
+            // Si el asociado no es un AsociadoNatural, crear uno nuevo
+            long montoAportacion;
+            while (true) {
+                String input = JOptionPane.showInputDialog("Ingresa el monto de la primera aportación (debe ser >= 2500): ");
+                montoAportacion = Long.parseLong(input);
+                
+                if (montoAportacion >= 2500) {
+                    break; // Salir del bucle si la aportación es válida
+                }
+                
+                JOptionPane.showMessageDialog(null, "La primera aportación debe ser mayor o igual a 2500.");
+            }
+    
+            LocalDate fecha_tomaPosesion = LocalDate.now();
+            AsociadoNatural nuevoAsociadoN = new AsociadoNatural(
+                asociado.getNum_socio(),
+                asociado.getNombre(),
+                asociado.getTelefono(),
+                asociado.getFecha_ingreso(),
+                montoAportacion,
+                1, // Primera aportación
+                fecha_tomaPosesion
+            );
+    
+            listaAN.add(nuevoAsociadoN);
+            conttrolador_asociados++;
+            JOptionPane.showMessageDialog(null, "Aportación registrada correctamente.");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Error: Ingrese un valor numérico válido y/o no deje vacío los espacios.");
+        }
+    }
+
+    /// AQUIIIII
+    public static void RegistrarAportacionAsociadoNatural_2() {
+        if (listaAN.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No hay asociados naturales registrados.");
+            return;
+        }
+    
+        // Solicitar el número de asociado
+        String inputNumSocio = JOptionPane.showInputDialog(null, "Ingrese el número del socio:");
+        if (inputNumSocio == null || inputNumSocio.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "El número de socio no puede estar vacío.");
+            return;
+        }
+    
+        int numSocio;
+        try {
+            numSocio = Integer.parseInt(inputNumSocio.trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Número de socio inválido.");
+            return;
+        }
+    
+        // Buscar el asociado natural en la lista
+        AsociadoNatural asociadoN = null;
+        for (AsociadoNatural an : listaAN) {
+            if (an.getNum_socio() == numSocio) {
+                asociadoN = an;
+                break;
+            }
+        }
+    
+        if (asociadoN == null) {
+            JOptionPane.showMessageDialog(null, "Asociado natural no encontrado.");
+            return;
+        }
+    
+        // Solicitar la cantidad de la nueva aportación
+        String inputAportacion = JOptionPane.showInputDialog(null, "Ingrese la cantidad de la nueva aportación:");
+        if (inputAportacion == null || inputAportacion.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Cantidad de aportación no ingresada.");
+            return;
+        }
+    
+        double nuevaAportacion;
+        try {
+            nuevaAportacion = Double.parseDouble(inputAportacion.trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Cantidad de aportación inválida.");
+            return;
+        }
+    
+        // Actualizar la aportación
+        asociadoN.agregarAportacion(nuevaAportacion);
+    
+        // Mostrar un mensaje de éxito
+        JOptionPane.showMessageDialog(null, "Aportación registrada exitosamente.");
+    }
+    
+
+/////
+
+
+
+
+
+
+    public static void AsignarCargo_Directivo_2(List<Asociados> listaAsociados) {
     if (listaAsociados.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "No hay asociados registrados");
+        JOptionPane.showMessageDialog(null, "No hay asociados registrados.");
         return;
     }
-    if (conttrolador_asociados >= listaAsociados.size()) {
-        JOptionPane.showMessageDialog(null, "Todos los asociados ya tienen un cargo asignado.");
-        return;
-    }  
-    Asociados asociado = listaAsociados.get(conttrolador_asociados);
-    try{
-    String input = JOptionPane.showInputDialog("Ingresa el monto de aportaciones: ");
-    Long montoAportaciones = Long.parseLong(input);
-    String input2 = JOptionPane.showInputDialog("Ingresa la cantidad de aportaciones: ");
-    int cantidadAportaciones = Integer.parseInt(input2);
-    LocalDate fecha_tomaPosesion = LocalDate.now();
-    AsociadoNatural asociadoN = new AsociadoNatural(
-        asociado.getNum_socio(),
-        asociado.getNombre(),
-        asociado.getTelefono(),
-        asociado.getFecha_ingreso(),
-        montoAportaciones,
-        cantidadAportaciones,
-        fecha_tomaPosesion
-    );
-    listaAN.add(asociadoN);
-    conttrolador_asociados++;
-    }catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(null, "Error: Ingrese un valor numérico válido y/o No deje vacio los espacios");
-        return;
+
+    try {
+        // Pedir al usuario que ingrese el número de socio
+        String inputNumSocio = JOptionPane.showInputDialog(null, "Ingrese el número del socio:");
+        if (inputNumSocio == null || inputNumSocio.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "El número de socio no puede estar vacío.");
+            return;
+        }
+
+        int numSocio = Integer.parseInt(inputNumSocio);
+        Asociados asociado = null;
+
+        // Buscar el asociado en la lista
+        for (Asociados a : listaAsociados) {
+            if (a.getNum_socio() == numSocio) {
+                asociado = a;
+                break;
+            }
+        }
+
+        if (asociado == null) {
+            JOptionPane.showMessageDialog(null, "No se encontró un asociado con ese número.");
+            return;
+        }
+
+        // Seleccionar el cargo de la lista disponible
+        String cargo = seleccionarCargo(listaAD);
+        if (cargo == null || cargo.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar un cargo.");
+            return;
+        }
+
+        // Asignar el cargo al asociado y registrarlo como directivo
+        LocalDate fecha_tomaPosesion = LocalDate.now();
+        AsociadoDirecto asociadoD = new AsociadoDirecto(
+            asociado.getNum_socio(),
+            asociado.getNombre(),
+            asociado.getTelefono(),
+            asociado.getFecha_ingreso(),
+            cargo,
+            fecha_tomaPosesion
+        );
+
+        listaAD.add(asociadoD);
+        JOptionPane.showMessageDialog(null, "Cargo asignado correctamente a " + asociado.getNombre());
+        
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Error: Ingrese un número de socio válido.");
     }
-    
 }
+
 
 public static void ImprimirAsociadosDirectivos() {
     if (listaAD.isEmpty()) {
@@ -231,38 +389,36 @@ public static void ImprimirAsociadosDirectivos() {
         JOptionPane.showMessageDialog(null, scrollPane, "Lista de Asociados Directivos", JOptionPane.INFORMATION_MESSAGE);
     }
 }
-    /*public static void ImprimirAsociadosDirectivos() {
-        if (listaAD.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No hay asociados directivos registrados.");
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (AsociadoDirecto asociado : listaAD) {
-                sb.append(asociado.toString()).append("\n");
-                sb.append("------------\n"); //Y: le agregue un separador dentro de la lista
-            }
-            JOptionPane.showMessageDialog(null, sb.toString());
-        }
-    }*/
 
-    public static void ImprimirAsociadosNaturales() {
-        if (listaAN.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No hay asociados naturales registrados.");
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (AsociadoNatural asociado : listaAN) {
-                sb.append(asociado.toString()).append("\n");
-                sb.append("------------\n");  //Y: le agregue un separador dentro de la lista
-            }
-            JOptionPane.showMessageDialog(null, sb.toString());
+public static void ImprimirAsociadosNaturales() {
+    if (listaAN.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "No hay asociados naturales registrados.");
+    } else {
+        StringBuilder sb = new StringBuilder();
+        for (AsociadoNatural asociado : listaAN) {
+            sb.append(asociado.toString()).append("\n");
+            sb.append("------------\n");  // Separador entre los asociados
         }
+        
+        // Crear un JTextArea para mostrar la información
+        JTextArea textArea = new JTextArea(20, 50);
+        textArea.setText(sb.toString());
+        textArea.setEditable(false);
+        
+        // Crear un JScrollPane para permitir el desplazamiento
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        
+        // Mostrar todo el contenido en un JOptionPane
+        JOptionPane.showMessageDialog(null, scrollPane, "Lista de Asociados Naturales", JOptionPane.INFORMATION_MESSAGE);
     }
+}
 
         //método auxiliar al método de asignar asociado, sea diretivo o natural
         public static void Directivo_O_Natural(List<Asociados> listaAsociados){
             //void aD = AsignarCargo_Directivo(listaAsociados);
             Object[] op = {"Asociado DIrectivo", "Asociado Natural"};
             int res = JOptionPane.showOptionDialog(null, 
-            "¿Que Tipo De Asociado Desea Añadir?", 
+            "¿Que tipo De asociado desea añadir?", 
             "SELECCIÓN DE ASOCIADO",  
             JOptionPane.DEFAULT_OPTION, 
             JOptionPane.QUESTION_MESSAGE, 

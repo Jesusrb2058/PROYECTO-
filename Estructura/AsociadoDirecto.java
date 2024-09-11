@@ -1,8 +1,7 @@
 package Estructura;
 
 import java.time.LocalDate;
-
-
+ 
 public class AsociadoDirecto extends Asociados {
 
     private String cargo;

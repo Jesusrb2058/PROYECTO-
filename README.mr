@@ -1,1 +1,49 @@
-"Aqui se comentara el codigo"
+# Documentación de la Aplicación de Gestión de Asociados
+
+## Descripción General
+
+La clase `MyApp` es una aplicación de gestión de asociados que permite agregar, asignar cargos y registrar aportaciones de asociados. Utiliza interfaces gráficas con `JOptionPane` para la interacción con el usuario.
+
+## Métodos
+
+### `iniciarMenu()`
+
+Inicia el menú principal de la aplicación y permite al usuario seleccionar diferentes opciones. La aplicación continúa ejecutándose hasta que el usuario decide salir.
+
+### `seleccionarCargo(List<AsociadoDirecto> listaAD)`
+
+Permite al usuario seleccionar un cargo disponible o ingresar uno nuevo. El método filtra los cargos ya asignados y muestra opciones de cargos disponibles. 
+
+**Parámetros:**
+- `listaAD`: Lista de asociados directivos para verificar cargos ya asignados.
+
+**Retorna:**
+- El nombre del cargo seleccionado o ingresado por el usuario, o `null` si se cancela la operación.
+
+### `AgregarAsociados()`
+
+Permite agregar nuevos asociados. Solicita al usuario la información del asociado mediante cuadros de diálogo y valida los datos ingresados antes de agregar el asociado a la lista.
+
+### `AsignarCargo_Directivo_2(List<Asociados> listaAsociados)`
+
+Asigna un cargo a un asociado directivo. Solicita al usuario el número del socio y el cargo a asignar, luego actualiza la lista de asociados directivos.
+
+**Parámetros:**
+- `listaAsociados`: Lista de asociados de la cual se extraerá el asociado para asignar el cargo.
+
+### `RegistrarAportacionAsociadoNatural_2()`
+
+Registra una nueva aportación para un asociado natural específico. Solicita el número del socio y la cantidad de la nueva aportación, y actualiza la información del asociado.
+
+### `ImprimirAsociadosDirectivos()`
+
+Imprime la lista de asociados directivos en un cuadro de diálogo.
+
+### `ImprimirAsociadosNaturales()`
+
+Imprime la lista de asociados naturales en un cuadro de diálogo.
+
+## Notas
+
+- La aplicación utiliza `JOptionPane` para la entrada y salida de datos del usuario.
+- La clase `MyApp` maneja tanto asociados directivos como asociados naturales, permitiendo la gestión de cargos y aportaciones.
